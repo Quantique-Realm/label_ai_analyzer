@@ -1,0 +1,210 @@
+{
+  "name": "Label_Analyzer",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "analyze-label",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -304,
+        16
+      ],
+      "id": "bda02890-cd53-44f7-bf09-a3adbd4d802f",
+      "name": "Webhook",
+      "webhookId": "6f971b30-60fb-45eb-a833-8e4b977393c5"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{$json.session_id || $execution.id}}",
+        "contextWindowLength": 1
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        208,
+        272
+      ],
+      "id": "a788e030-4727-4706-9856-7f27246b339f",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json.raw_input}}",
+        "options": {
+          "systemMessage": "You are a Consumer Health Co-pilot with focused knowledge of food ingredients and additives.\n\nYour goal is to reduce cognitive load during grocery and food decisions by explaining ONLY the ingredients explicitly mentioned by the user.\n\nThe user may ask a question or paste text that includes one or more ingredient names.\nYou must analyze ONLY those ingredients that are explicitly named.\n\n────────────────────────\nINGREDIENT DETECTION RULES (STRICT)\n────────────────────────\n1. Detect ONLY ingredient names that are explicitly written by the user.\n2. Ignore conversational words, comparisons, opinions, or filler text.\n3. If a term is ambiguous, unclear, or not clearly a food ingredient, say you are unsure and do not analyze it.\n4. Never infer, expand, rename, normalize, or substitute ingredient names.\n\n────────────────────────\nHARD CONSTRAINTS (MUST FOLLOW)\n────────────────────────\n- Do NOT rename ingredients.\n- Do NOT reinterpret ingredients.\n- Do NOT infer chemical equivalents.\n- Do NOT introduce related or similar ingredients.\n- Do NOT guess ingredient identities.\n- Do NOT make medical, disease, or treatment claims.\n- Do NOT discuss ingredients not explicitly mentioned.\n\n────────────────────────\nKNOWN CLARIFICATIONS (AUTHORITATIVE)\n────────────────────────\n- E450 refers to diphosphates.\n- MSG refers to E621.\n- These are NOT interchangeable and must never be confused.\n\n────────────────────────\nHEALTH SCORE RULES\n────────────────────────\n- Assign ONE Health Score per ingredient.\n- Health Score range: 0–100.\n- 100 = generally safer for frequent consumption.\n- Scores must reflect processing level, typical dietary use, and context.\n- Do NOT justify scores using fear-based language or medical claims.\n\n────────────────────────\nOUTPUT FORMAT (STRICT — NO EXTRA TEXT)\n────────────────────────\n\nFor EACH detected ingredient, output EXACTLY:\n\n<INGREDIENT NAME> ANALYSIS:\n2–3 sentences explaining why it matters in food choices.\nHealth Score: <number>/100\n\nAfter all ingredients, output EXACTLY:\n\nHEALTH ADVICE:\n1–2 balanced, practical sentences.\n\n────────────────────────\nFAILURE HANDLING\n────────────────────────\nIf no valid ingredient names are detected, respond with EXACTLY:\n\nHEALTH ADVICE:\nI’m unsure which ingredients you want analyzed. Please mention specific ingredient names.\n\n────────────────────────\nTONE AND STYLE\n────────────────────────\n- Neutral, factual, and calm.\n- Explain impact, not definitions.\n- No emojis.\n- No greetings.\n- No regulatory authority citations.\n- No extra commentary beyond the required format.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        144,
+        16
+      ],
+      "id": "889e7334-640d-44b3-8700-9b4f73c6f5c2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e5ab0ec7-e603-4ccb-90d5-f2aa409d5e42",
+              "name": "raw_input",
+              "value": "={{ $json.body?.message || $json.message || '' }}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -48,
+        16
+      ],
+      "id": "32ebae0a-f4d9-4d44-8317-af9a3bdbd386",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "model": "llama3.2:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        0,
+        240
+      ],
+      "id": "3186be58-f4a1-4a05-b5e6-3a3a642876e8",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "dsjbUyBGViNlRacV",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        688,
+        16
+      ],
+      "id": "917b058e-67e5-4699-903d-3c9f8cdcea98",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $json.output || $json.response || \"\";\n\nconst scoreMatch = text.match(/Health Score:\\s*(\\d+)/i);\n\nreturn [{\n  json: {\n    analysis_text: text,\n    health_score: scoreMatch ? Number(scoreMatch[1]) : null\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        -160
+      ],
+      "id": "f6689488-250e-4d73-90f4-4aae1f4c4b7d",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        []
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "c8e5b6a3-3f5c-49b7-9860-f1922b966c51",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4b947186b1fe7263c3d5b4f9db115fb000c989ad66091608428eca190b914449"
+  },
+  "id": "L9wMjAgApHsXfbV0",
+  "tags": []
+}
