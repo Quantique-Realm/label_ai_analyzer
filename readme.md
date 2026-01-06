@@ -391,23 +391,6 @@ While this is a local prototype, here's how to scale:
 3. Deploy React frontend to CDN
 4. Add authentication and rate limiting
 
----
-
-## 📊 **Performance Notes**
-
-| Component | Resource Usage | Response Time |
-|-----------|---------------|---------------|
-| React Frontend | ~50MB RAM | Instant |
-| n8n Workflow | ~200MB RAM | 50-100ms |
-| Ollama (llama3) | ~4-6GB RAM | 2-5s per analysis |
-
-**Optimization Tips:**
-- Use smaller models (mistral, phi) for faster responses
-- Quantize models to reduce memory usage
-- Batch multiple ingredients in one LLM call
-
----
-
 
 ## 🙏 **Acknowledgments**
 
