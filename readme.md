@@ -391,6 +391,10 @@ While this is a local prototype, here's how to scale:
 3. Deploy React frontend to CDN
 4. Add authentication and rate limiting
 
+## **Screenshots**
+<img width="1654" height="918" alt="Screenshot 2026-01-06 at 11 21 41 PM" src="https://github.com/user-attachments/assets/64314214-fb2a-44ae-8598-8b1c1e5226f2" />
+
+<img width="1363" height="901" alt="Screenshot 2026-01-06 at 11 21 51 PM" src="https://github.com/user-attachments/assets/c4e7f18f-1c18-417f-a088-dfbfc0176d0b" />
 
 ## 🙏 **Acknowledgments**
 
