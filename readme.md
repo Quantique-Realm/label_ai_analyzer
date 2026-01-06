@@ -5,7 +5,7 @@
 Instead of overwhelming users with raw nutritional data, Food Label AI provides ingredient-level reasoning, clear health insights, and honest uncertainty—making informed food choices accessible to everyone.
 
 ![Food Label AI Demo](https://img.shields.io/badge/Status-Local%20Prototype-green?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
+
 
 ---
 
@@ -87,15 +87,6 @@ This is a **local-first prototype** designed to prioritize experience quality an
 │  └─────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
-
-### **Why Local-First?**
-
-- ✅ **Privacy**: Your food data never leaves your machine
-- ✅ **Rapid iteration**: Focus on UX and reasoning quality
-- ✅ **Zero external costs**: No API keys or cloud dependencies
-- ✅ **Deployable**: Architecture scales to production with minimal changes
-
----
 
 ## 🚀 **Getting Started**
 
@@ -417,29 +408,6 @@ While this is a local prototype, here's how to scale:
 
 ---
 
-## 🤝 **Contributing**
-
-Contributions are welcome! Here's how:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
-
-**Priority Areas:**
-- [ ] Multi-language support
-- [ ] Nutrition data integration (USDA API)
-- [ ] Allergen detection
-- [ ] Personalized scoring based on dietary restrictions
-
----
-
-## 📝 **License**
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
 
 ## 🙏 **Acknowledgments**
 
@@ -450,25 +418,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Lucide React** - Icon system
 
 ---
-
-## 📬 **Contact & Support**
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/food-label-ai/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/food-label-ai/discussions)
-- **Demo Video**: [Watch on YouTube](#)
-
----
-
-## 🔮 **Future Roadmap**
-
-- [ ] **Mobile App** (React Native)
-- [ ] **Barcode Scanner** (UPC lookup)
-- [ ] **Meal Planning** (AI-suggested alternatives)
-- [ ] **Community Ratings** (crowdsourced insights)
-- [ ] **API Access** (for third-party integrations)
-
----
-
-**Made with ❤️ for healthier food choices**
-
-*Star ⭐ this repo if you found it helpful!*
